@@ -213,3 +213,4 @@ checkpoint.pt
 *.mid
 data/
 wandb/
+model_checkpoints/

@@ -7,7 +7,7 @@ from miditok.pytorch_data import DatasetMIDI, DataCollator
 from miditok.utils import split_files_for_training
 from torch.utils.data import DataLoader
 # from torch.utils.data.distributed import DistributedSampler
-from config import get_config
+from arpeggpt.config import get_config
 
 # load_dotenv()
 # hf_token = os.getenv('HF_TOKEN')
@@ -15,8 +15,9 @@ from config import get_config
 # tokenizer = REMI.from_pretrained('algorhythmic/remi-giantmidi-tokenizer', token=hf_token)
 # tokenizer.save_pretrained('arpeggpt/midi_tokenizer')
 tokenizer = REMI.from_pretrained('arpeggpt/midi_tokenizer')
-midi_paths = list(Path('data/giantmidi-small').glob("**/*.mid"))
-dataset_chunks_dir = Path('data/chunks')
+midi_dir = Path('data/giantmidi-small').resolve()
+midi_paths = list(midi_dir.glob("**/*.mid"))
+dataset_chunks_dir = Path('data/chunks').resolve()
 
 def prepare_dataset(batch_size, config):
     split_files_for_training(

@@ -20,12 +20,15 @@ class Trainer:
         optimizer: torch.optim.Optimizer,
         lr_scheduler: torch.optim.lr_scheduler.LRScheduler,
         save_every: int,
+        device: torch.device
     ):
         self.model = model
         self.dataloader = dataloader
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
         self.save_every = save_every
+        self.device = device
+        self.model.to(self.device)
 
     def _run_batch(self, X, y, attn_mask):
         self.optimizer.zero_grad()
@@ -35,31 +38,35 @@ class Trainer:
         self.lr_scheduler.step(loss)
         return loss
 
-    def _run_epoch(self, epoch):
+    def _run_epoch(self):
         total_loss = 0
         num_batches = len(self.dataloader)
         for i, batch in enumerate(self.dataloader):
-            X, y, attn_mask = (batch['input_ids'], batch['labels'], batch['attention_mask'])
+            X, y, attn_mask = (
+                batch['input_ids'].to(self.device), 
+                batch['labels'].to(self.device), 
+                batch['attention_mask'].to(self.device)
+            )
             batch_loss = self._run_batch(X, y, attn_mask)
             total_loss += batch_loss
             if i % 100 == 0:
-                print(f'    Batch: {i+1}, Loss: {batch_loss:.3f}')
+                print(f'    Batch: {i+1}, Loss: {batch_loss:.4f}')
         avg_loss = total_loss / num_batches
         print(f'Average Loss: {avg_loss}\n')
 
     def _save_checkpoint(self, epoch):
         checkpoint = self.model.state_dict()
-        PATH = 'snapshot.pt'
+        PATH = f'model_checkpoints/checkpoint{epoch}.pt'
         torch.save(checkpoint, PATH)
-        print(f"Training snapshot saved at {PATH}\n")
+        print(f"Training checkpoint saved at {PATH}\n")
 
     def train(self, num_epochs: int):
         for epoch in range(num_epochs):
-            print(f'Epoch: {epoch + 1}')
-            self._run_epoch(epoch)
+            print(f'Epoch: {epoch + 1}\n----------------------------------------')
+            self._run_epoch()
             if epoch % self.save_every == 0:
                 self._save_checkpoint()
-        torch.save(self.model, 'pianoGen.pth')
+        torch.save(self.model, 'arpeggpt.pth')
 
 
 def load_train_objects(batch_size, config):
@@ -70,8 +77,15 @@ def load_train_objects(batch_size, config):
     return dataloader, model, optimizer, lr_scheduler
 
 
-def main(batch_size: int, num_epochs: int, save_every: int, config: dict):
+def main(batch_size: int, num_epochs: int, save_every: int, config: dict, device: torch.device):
     dataloader, model, optimizer, lr_scheduler = load_train_objects(batch_size, config)
-    trainer = Trainer(model, dataloader, optimizer, lr_scheduler, save_every)
+    trainer = Trainer(
+        model=model, 
+        dataloader=dataloader, 
+        optimizer=optimizer, 
+        lr_scheduler=lr_scheduler, 
+        save_every=save_every, 
+        device=device
+    )
     model.train()
     trainer.train(num_epochs)
