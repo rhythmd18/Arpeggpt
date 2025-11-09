@@ -5,6 +5,16 @@ from arpeggpt.data import prepare_dataset
 from arpeggpt.model import GPTModel
 
 def calculate_loss_batch(input_batch, target_batch, attn_mask, model):
+    '''
+    Calculate the cross-entropy loss for a batch of data.
+    Args:
+        input_batch: The input tensor batch.
+        target_batch: The target tensor batch.
+        attn_mask: The attention mask tensor.
+        model: The GPT model.
+    Returns:
+        loss: The computed cross-entropy loss.
+    '''
     logits = model(input_batch, attn_mask)
     loss = torch.nn.functional.cross_entropy(
         logits.flatten(0, 1),
@@ -65,7 +75,7 @@ class Trainer:
             print(f'Epoch: {epoch + 1}\n----------------------------------------')
             self._run_epoch()
             if epoch % self.save_every == 0:
-                self._save_checkpoint()
+                self._save_checkpoint(epoch)
         torch.save(self.model, 'arpeggpt.pth')
 
 

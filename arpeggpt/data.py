@@ -19,6 +19,14 @@ midi_paths = list(midi_dir.glob("**/*.mid"))
 dataset_chunks_dir = Path('data/chunks').resolve()
 
 def prepare_dataset(batch_size, config, rebuild=False):
+    '''Prepare the dataset for training.
+    Args:
+        batch_size: The batch size for the DataLoader.
+        config: The configuration dictionary.
+        rebuild: Whether to rebuild the dataset chunks.
+    Returns:
+        dataloader: The DataLoader for the prepared dataset.
+    '''
     if rebuild and dataset_chunks_dir.exists():
         shutil.rmtree(dataset_chunks_dir)
     if (not dataset_chunks_dir.exists()

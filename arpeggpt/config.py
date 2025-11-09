@@ -1,6 +1,9 @@
+# Configuration settings for different GPT model sizes
+
+# For quick testing and debugging
 GPT_TEST_CONFIG = {
     'vocab_size': 30000,    # Vocabulary size
-    'context_length': 256, # Context length
+    'context_length': 256,  # Context length
     'emb_dim': 192,         # Embedding dimension
     'n_heads': 12,          # Number of attention heads
     'n_layers': 12,         # Number of layers
@@ -8,6 +11,7 @@ GPT_TEST_CONFIG = {
     'qkv_bias': False       # Query-Key-value bias
 }
 
+# For smaller models suitable for limited resources
 GPT_SMALL_CONFIG = {
     'vocab_size': 30000,    # Vocabulary size
     'context_length': 1024, # Context length
@@ -18,36 +22,40 @@ GPT_SMALL_CONFIG = {
     'qkv_bias': False       # Query-Key-value bias
 }
 
+# For medium-sized models suitable for balanced performance and resource usage
 GPT_MEDIUM_CONFIG = {
     'vocab_size': 30000,    # Vocabulary size
     'context_length': 1024, # Context length
-    'emb_dim': 1024,         # Embedding dimension
+    'emb_dim': 1024,        # Embedding dimension
     'n_heads': 16,          # Number of attention heads
     'n_layers': 24,         # Number of layers
     'drop_rate': 0.1,       # Dropout rate
     'qkv_bias': False       # Query-Key-value bias
 }
 
+# For large models suitable for high-performance tasks with ample resources
 GPT_LARGE_CONFIG = {
     'vocab_size': 30000,    # Vocabulary size
     'context_length': 1024, # Context length
-    'emb_dim': 1260,         # Embedding dimension
+    'emb_dim': 1260,        # Embedding dimension
     'n_heads': 20,          # Number of attention heads
     'n_layers': 36,         # Number of layers
     'drop_rate': 0.1,       # Dropout rate
     'qkv_bias': False       # Query-Key-value bias
 }
 
+# For extra-large models suitable for cutting-edge performance with significant resources
 GPT_XL_CONFIG = {
     'vocab_size': 30000,    # Vocabulary size
     'context_length': 1024, # Context length
-    'emb_dim': 1600,         # Embedding dimension
+    'emb_dim': 1600,        # Embedding dimension
     'n_heads': 25,          # Number of attention heads
     'n_layers': 48,         # Number of layers
     'drop_rate': 0.1,       # Dropout rate
     'qkv_bias': False       # Query-Key-value bias
 }
 
+# Function to retrieve configuration based on model size
 def get_config(size: str):
     if size.lower() == 'test':
         return GPT_TEST_CONFIG

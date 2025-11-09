@@ -3,8 +3,12 @@ import torch.nn as nn
 
 
 class MultiHeadAttention(nn.Module):
+    '''
+    Multi-Head Self-Attention Module
+    '''
     def __init__(self, d_in, d_out, context_length,
                  dropout, num_heads, qkv_bias=False):
+        '''Initialize the Multi-Head Self-Attention module.'''
         super().__init__()
         assert (d_out % num_heads == 0), \
             'd_out must be divisible by num_heads'
@@ -24,6 +28,14 @@ class MultiHeadAttention(nn.Module):
         )
 
     def forward(self, X, attn_mask=None):
+        '''
+        Forward pass for Multi-Head Self-Attention.
+        Args:
+            X: Input tensor of shape (batch_size, num_tokens, d_in)
+            attn_mask: Optional attention mask tensor
+        Returns:
+            context_vec: Output tensor of shape (batch_size, num_tokens, d_out)
+        '''
         b, num_tokens, d_in = X.shape
         queries = self.W_query(X)
         keys = self.W_key(X)
