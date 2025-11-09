@@ -1,3 +1,13 @@
+GPT_TEST_CONFIG = {
+    'vocab_size': 30000,    # Vocabulary size
+    'context_length': 256, # Context length
+    'emb_dim': 192,         # Embedding dimension
+    'n_heads': 12,          # Number of attention heads
+    'n_layers': 12,         # Number of layers
+    'drop_rate': 0.1,       # Dropout rate
+    'qkv_bias': False       # Query-Key-value bias
+}
+
 GPT_SMALL_CONFIG = {
     'vocab_size': 30000,    # Vocabulary size
     'context_length': 1024, # Context length
@@ -39,6 +49,8 @@ GPT_XL_CONFIG = {
 }
 
 def get_config(size: str):
+    if size.lower() == 'test':
+        return GPT_TEST_CONFIG
     if size.lower() == 'small':
         return GPT_SMALL_CONFIG
     elif size.lower() == 'medium':

@@ -2,11 +2,10 @@
 # from dotenv import load_dotenv
 from pathlib import Path
 from miditok import REMI, TokenizerConfig, TokSequence
-from symusic import Score
+import shutil
 from miditok.pytorch_data import DatasetMIDI, DataCollator
 from miditok.utils import split_files_for_training
 from torch.utils.data import DataLoader
-# from torch.utils.data.distributed import DistributedSampler
 from arpeggpt.config import get_config
 
 # load_dotenv()
@@ -19,13 +18,18 @@ midi_dir = Path('data/giantmidi-small').resolve()
 midi_paths = list(midi_dir.glob("**/*.mid"))
 dataset_chunks_dir = Path('data/chunks').resolve()
 
-def prepare_dataset(batch_size, config):
-    split_files_for_training(
-        files_paths=midi_paths,
-        tokenizer=tokenizer,
-        save_dir=dataset_chunks_dir,
-        max_seq_len=config['context_length']
-    )
+def prepare_dataset(batch_size, config, rebuild=False):
+    if rebuild and dataset_chunks_dir.exists():
+        shutil.rmtree(dataset_chunks_dir)
+    if (not dataset_chunks_dir.exists()
+        or not any(dataset_chunks_dir.rglob('*.mid'))):
+        dataset_chunks_dir.mkdir(parents=True, exist_ok=True)
+        split_files_for_training(
+            files_paths=midi_paths,
+            tokenizer=tokenizer,
+            save_dir=dataset_chunks_dir,
+            max_seq_len=config['context_length']
+        )
     dataset = DatasetMIDI(
         files_paths=list(dataset_chunks_dir.glob("**/*.mid")),
         tokenizer=tokenizer,
