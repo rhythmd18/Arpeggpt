@@ -54,7 +54,7 @@ Each model size corresponds to a preset configuration controlling:
 | large  | 36                  | 1260                       | 20                |
 | xl     | 48                  | 1600                       | 25                |
 
-These configurations have been defined in `arpeggpt/config.py`
+These configurations have been defined in [`arpeggpt/config.py`](https://github.com/rhythmd18/Arpeggpt/blob/main/arpeggpt/config.py)
 
 ---
 
